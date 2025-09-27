@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>M3ter Payload Decoder</title>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link
+      as="style"
+      href="https://fonts.googleapis.com/css2?display=swap&amp;family=Inter%3Awght%40400%3B500%3B700%3B900&amp;family=Noto+Sans%3Awght%40400%3B500%3B700%3B900"
+      onload="this.rel='stylesheet'"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#019863",
+              "background-light": "#f5f8f7",
+              "background-dark": "#0f231c",
+            },
+            fontFamily: {
+              display: "Inter",
+            },
+            borderRadius: {
+              DEFAULT: "0.25rem",
+              lg: "0.5rem",
+              xl: "0.75rem",
+              full: "9999px",
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      body {
+        min-height: max(884px, 100dvh);
+      }
+
+      .tab-button.active {
+        background-color: #019863;
+        color: white;
+      }
+
+      .tab-button {
+        background-color: transparent;
+      }
+    </style>
+    <style>
+      body {
+        min-height: max(884px, 100dvh);
+      }
+    </style>
+    <style>
+      body {
+        min-height: max(884px, 100dvh);
+      }
+    </style>
+  </head>
+  <body class="font-display bg-background-light dark:bg-background-dark">
+    <div class="flex h-screen flex-col">
+      <header
+        class="flex items-center justify-between p-4 bg-background-light dark:bg-background-dark border-b border-white/10 dark:border-white/10"
+      >
+        <div class="w-12"></div>
+        <h1 class="text-lg font-bold text-center text-black dark:text-white flex-1">
+          M3ter Payload Decoder
+        </h1>
+        <div class="w-12 flex justify-end"></div>
+      </header>
+      <main class="flex-1 overflow-y-auto p-4 max-w-2xl mx-auto w-full">
+        <div class="space-y-6">
+          <div class="rounded-lg bg-white/10 dark:bg-white/5 p-1 flex space-x-1">
+            <button
+              class="tab-button active flex-1 py-2 text-sm font-medium rounded-md text-black/60 dark:text-white/60"
+            >
+              Hex
+            </button>
+            <button
+              class="tab-button flex-1 py-2 text-sm font-medium rounded-md text-black/60 dark:text-white/60"
+            >
+              Base64
+            </button>
+          </div>
+          <div class="space-y-2">
+            <label class="text-sm font-medium text-black/60 dark:text-white/60" for="payload-input"
+              >Payload</label
+            >
+            <textarea
+              class="w-full rounded-lg border-0 bg-white/10 dark:bg-white/5 p-4 text-black dark:text-white placeholder:text-black/40 dark:placeholder:text-white/40 focus:ring-2 focus:ring-inset focus:ring-primary h-32"
+              id="payload-input"
+              placeholder="Enter hex string..."
+            ></textarea>
+          </div>
+          <button
+            id="decode-button"
+            class="w-full rounded-lg bg-primary py-3 text-sm font-bold text-white"
+          >
+            Decode
+          </button>
+          <div>
+            <div id="result-container" class="space-y-2 rounded-lg bg-white/10 dark:bg-white/5 p-4">
+              <h2 class="text-xl font-bold text-black dark:text-white mb-4">Result</h2>
+              <div class="flex items-center justify-between py-2">
+                <span class="text-sm text-black/60 dark:text-white/60">Nonce</span>
+                <div class="flex items-center gap-2">
+                  <span id="nonce" class="text-sm font-mono text-black dark:text-white"
+                    >12345678</span
+                  >
+                  <button class="text-black/60 dark:text-white/60">
+                    <span class="material-symbols-outlined text-base"> content_copy </span>
+                  </button>
+                </div>
+              </div>
+              <div class="flex items-center justify-between py-2">
+                <span class="text-sm text-black/60 dark:text-white/60">Energy</span>
+                <div class="flex items-center gap-2">
+                  <span class="text-sm font-mono text-black dark:text-white"
+                    ><span id="energy" class="text-sm font-mono text-black dark:text-white"
+                      >12345
+                    </span>
+                    kWh</span
+                  >
+                  <button class="text-black/60 dark:text-white/60">
+                    <span class="material-symbols-outlined text-base"> content_copy </span>
+                  </button>
+                </div>
+              </div>
+              <div class="flex items-center justify-between py-2">
+                <span class="text-sm text-black/60 dark:text-white/60">Signature</span>
+                <div class="flex items-center gap-2">
+                  <span
+                    id="signature"
+                    class="text-sm font-mono text-black dark:text-white truncate max-w-[150px]"
+                    >abcdef1234567890</span
+                  >
+                  <button class="text-black/60 dark:text-white/60">
+                    <span class="material-symbols-outlined text-base"> content_copy </span>
+                  </button>
+                </div>
+              </div>
+              <div class="flex items-center justify-between py-2">
+                <span class="text-sm text-black/60 dark:text-white/60">Voltage</span>
+                <div class="flex items-center gap-2">
+                  <span class="text-sm font-mono text-black dark:text-white"
+                    ><span id="voltage">220</span> V</span
+                  >
+                  <button class="text-black/60 dark:text-white/60">
+                    <span class="material-symbols-outlined text-base"> content_copy </span>
+                  </button>
+                </div>
+              </div>
+              <div class="flex items-center justify-between py-2">
+                <span class="text-sm text-black/60 dark:text-white/60">Identifier</span>
+                <div class="flex items-center gap-2">
+                  <span id="identifier" class="text-sm font-mono text-black dark:text-white"
+                    >Device001</span
+                  >
+                  <button class="text-black/60 dark:text-white/60">
+                    <span class="material-symbols-outlined text-base"> content_copy </span>
+                  </button>
+                </div>
+              </div>
+              <div class="flex items-center justify-between py-2">
+                <span class="text-sm text-black/60 dark:text-white/60">Longitude</span>
+                <div class="flex items-center gap-2">
+                  <span id="longitude" class="text-sm font-mono text-black dark:text-white"
+                    >34.0522° N</span
+                  >
+                  <button class="text-black/60 dark:text-white/60">
+                    <span class="material-symbols-outlined text-base"> content_copy </span>
+                  </button>
+                </div>
+              </div>
+              <div class="flex items-center justify-between py-2">
+                <span class="text-sm text-black/60 dark:text-white/60">Latitude</span>
+                <div class="flex items-center gap-2">
+                  <span id="latitude" class="text-sm font-mono text-black dark:text-white"
+                    >118.2437° W</span
+                  >
+                  <button class="text-black/60 dark:text-white/60">
+                    <span class="material-symbols-outlined text-base"> content_copy </span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div id="error-container"></div>
+          </div>
+        </div>
+      </main>
+    </div>
+    <script>
+      // Utility functions for input conversion
+      function hexToBytes(hex) {
+        // Remove any whitespace and ensure even length
+        hex = hex.replace(/\s/g, "");
+        if (hex.length % 2 !== 0) {
+          throw new Error("Hex string must have even length");
+        }
+
+        const bytes = new Uint8Array(hex.length / 2);
+        for (let i = 0; i < hex.length; i += 2) {
+          bytes[i / 2] = parseInt(hex.substr(i, 2), 16);
+        }
+        return bytes;
+      }
+
+      function base64ToBytes(base64) {
+        const binaryString = atob(base64);
+        const bytes = new Uint8Array(binaryString.length);
+        for (let i = 0; i < binaryString.length; i++) {
+          bytes[i] = binaryString.charCodeAt(i);
+        }
+        return bytes;
+      }
+
+      // Main payload decoder function
+      function decodePayload(bytes) {
+        if (bytes.length < 72) {
+          throw new Error("Payload too short. Must be at least 72 bytes");
+        }
+
+        // --- Core fields ---
+        // Nonce (4 bytes, big-endian uint32)
+        const nonce = (bytes[0] << 24) | (bytes[1] << 16) | (bytes[2] << 8) | bytes[3];
+
+        // Energy (4 bytes, big-endian uint32, kWh × 10^6)
+        const rawEnergy = (bytes[4] << 24) | (bytes[5] << 16) | (bytes[6] << 8) | bytes[7];
+        const energyKWh = rawEnergy / 1e6;
+
+        // Signature (64 bytes)
+        const signature = Array.from(bytes.slice(8, 72))
+          .map((b) => b.toString(16).padStart(2, "0"))
+          .join("");
+
+        // --- Optional extensions ---
+        const extensions = {};
+        let offset = 72;
+
+        // Voltage (2 bytes, big-endian uint16, voltage × 10)
+        if (bytes.length >= offset + 2) {
+          const rawVoltage = (bytes[offset] << 8) | bytes[offset + 1];
+          extensions.voltage = rawVoltage / 10;
+          offset += 2;
+        }
+
+        // Device ID (32 bytes, hex string)
+        if (bytes.length >= offset + 32) {
+          extensions.deviceId = Array.from(bytes.slice(offset, offset + 32))
+            .map((b) => b.toString(16).padStart(2, "0"))
+            .join("");
+          offset += 32;
+        }
+
+        // Longitude (3 bytes, signed big-endian, degrees × 10^5)
+        if (bytes.length >= offset + 3) {
+          let rawLon = (bytes[offset] << 16) | (bytes[offset + 1] << 8) | bytes[offset + 2];
+          // Handle signed 24-bit integer
+          if (rawLon & 0x800000) {
+            rawLon -= 0x1000000;
+          }
+          extensions.longitude = rawLon / 1e5;
+          offset += 3;
+        }
+
+        // Latitude (3 bytes, signed big-endian, degrees × 10^5)
+        if (bytes.length >= offset + 3) {
+          let rawLat = (bytes[offset] << 16) | (bytes[offset + 1] << 8) | bytes[offset + 2];
+          // Handle signed 24-bit integer
+          if (rawLat & 0x800000) {
+            rawLat -= 0x1000000;
+          }
+          extensions.latitude = rawLat / 1e5;
+          offset += 3;
+        }
+
+        return {
+          nonce,
+          energy: energyKWh,
+          signature,
+          extensions,
+        };
+      }
+
+      // UI State
+      let currentInputType = "hex";
+      let decodedData = null;
+      hideResultContainer();
+      hideErrorContainer();
+
+      // Tab switching functionality
+      function switchTab(type) {
+        currentInputType = type;
+
+        // Update tab button states
+        document.querySelectorAll(".tab-button").forEach((btn) => {
+          btn.classList.remove("active");
+        });
+
+        if (type === "hex") {
+          // if was not hex, clear input
+          if (document.querySelectorAll(".tab-button")[0].classList.contains("active") === false) {
+            document.getElementById("payload-input").value = "";
+          }
+          document.querySelectorAll(".tab-button")[0].classList.add("active");
+          document.getElementById("payload-input").placeholder = "Enter hex string...";
+        } else {
+          // if was not base64, clear input
+          if (document.querySelectorAll(".tab-button")[1].classList.contains("active") === false) {
+            document.getElementById("payload-input").value = "";
+          }
+          document.querySelectorAll(".tab-button")[1].classList.add("active");
+          document.getElementById("payload-input").placeholder = "Enter base64 string...";
+        }
+      }
+
+      // Copy to clipboard functionality
+      function copyToClipboard(text) {
+        navigator.clipboard
+          .writeText(text)
+          .then(() => {
+            // You could add a toast notification here
+            console.log("Copied to clipboard:", text);
+          })
+          .catch((err) => {
+            console.error("Failed to copy:", err);
+          });
+      }
+
+      // Update UI with decoded data
+      function updateDecodedFields(data) {
+        document.getElementById("nonce").textContent = data.nonce;
+        document.getElementById("energy").textContent = data.energy;
+        document.getElementById("signature").textContent = data.signature;
+        if (data.extensions.voltage !== undefined) {
+          document.getElementById("voltage").textContent = data.extensions.voltage;
+        } else {
+          document.getElementById("voltage").textContent = "N/A";
+        }
+
+        if (data.extensions.deviceId !== undefined) {
+          document.getElementById("identifier").textContent = data.extensions.deviceId;
+        } else {
+          document.getElementById("identifier").textContent = "N/A";
+        }
+        if (data.extensions.longitude !== undefined) {
+          document.getElementById("longitude").textContent = data.extensions.longitude + "°";
+        } else {
+          document.getElementById("longitude").textContent = "N/A";
+        }
+        if (data.extensions.latitude !== undefined) {
+          document.getElementById("latitude").textContent = data.extensions.latitude + "°";
+        } else {
+          document.getElementById("latitude").textContent = "N/A";
+        }
+      }
+
+      function showResultContainer() {
+        document.getElementById("result-container").style.display = "block";
+      }
+
+      function hideResultContainer() {
+        document.getElementById("result-container").style.display = "none";
+      }
+
+      function showErrorContainer() {
+        document.getElementById("error-container").style.display = "block";
+      }
+
+      function hideErrorContainer() {
+        document.getElementById("error-container").innerHTML = "";
+      }
+
+      // Show error message
+      function showError(message) {
+        showErrorContainer();
+        hideResultContainer();
+
+        const fieldsContainer = document.getElementById("error-container");
+        fieldsContainer.innerHTML = `
+          <div class="flex items-center justify-center py-8">
+            <div class="text-center">
+              <span class="material-symbols-outlined text-red-500 text-4xl mb-2 block">error</span>
+              <p class="text-red-500 text-sm">${message}</p>
+            </div>
+          </div>
+        `;
+      }
+
+      // Main decode function
+      function decodePayloadFromInput() {
+        const input = document.getElementById("payload-input").value.trim();
+
+        if (!input) {
+          showError("Please enter a payload to decode");
+          return;
+        }
+
+        try {
+          let bytes;
+
+          if (currentInputType === "hex") {
+            bytes = hexToBytes(input);
+          } else {
+            bytes = base64ToBytes(input);
+          }
+
+          decodedData = decodePayload(bytes);
+
+          console.log("Decoded Data:", decodedData);
+
+          updateDecodedFields(decodedData);
+          showResultContainer();
+          hideErrorContainer();
+        } catch (error) {
+          showError(error.message);
+        }
+      }
+
+      // Initialize event listeners when DOM is loaded
+      document.addEventListener("DOMContentLoaded", function () {
+        // Tab button event listeners
+        const tabButtons = document.querySelectorAll(".tab-button");
+        tabButtons[0].addEventListener("click", () => switchTab("hex"));
+        tabButtons[1].addEventListener("click", () => switchTab("base64"));
+
+        // Decode button event listener
+        document.getElementById("decode-button").addEventListener("click", decodePayloadFromInput);
+
+        // Enter key support for textarea
+        document.getElementById("payload-input").addEventListener("keydown", function (e) {
+          if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) {
+            decodePayloadFromInput();
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
