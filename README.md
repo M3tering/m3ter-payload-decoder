@@ -1,6 +1,6 @@
 # M3ter Payload Decoder
 
-A web-based decoder for M3ter protocol payload data. This tool allows you to decode binary payloads from smart meters into human-readable format, supporting both hex and base64 input formats.
+A web-based decoder for M3tering protocol payload data. This tool allows you to decode binary payloads from smart meters into human-readable format, supporting both hex and base64 input formats.
 
 ## Decoded Fields
 
