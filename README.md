@@ -15,13 +15,6 @@ A web-based decoder for M3ter protocol payload data. This tool allows you to dec
 - **Longitude**: Geographic longitude in degrees (5 decimal precision)
 - **Latitude**: Geographic latitude in degrees (5 decimal precision)
 
-## Usage
-
-1. **Select Input Format**: Choose between "Hex" or "Base64" tabs
-2. **Enter Payload**: Paste your payload data in the text area
-3. **Decode**: Click the "Decode" button or press `Ctrl+Enter`
-4. **Copy Results**: Click the copy icon next to any decoded field
-
 ### Example Payloads
 
 #### Hex Format
