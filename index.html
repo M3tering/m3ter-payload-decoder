@@ -114,7 +114,10 @@
                   <span id="nonce" class="text-sm font-mono text-black dark:text-white"
                     >12345678</span
                   >
-                  <button class="text-black/60 dark:text-white/60">
+                  <button
+                    class="text-black/60 dark:text-white/60"
+                    onclick="copyToClipboard(document.getElementById('nonce').textContent)"
+                  >
                     <span class="material-symbols-outlined text-base"> content_copy </span>
                   </button>
                 </div>
@@ -128,7 +131,10 @@
                     </span>
                     kWh</span
                   >
-                  <button class="text-black/60 dark:text-white/60">
+                  <button
+                    class="text-black/60 dark:text-white/60"
+                    onclick="copyToClipboard(document.getElementById('energy').textContent)"
+                  >
                     <span class="material-symbols-outlined text-base"> content_copy </span>
                   </button>
                 </div>
@@ -153,7 +159,10 @@
                   <span class="text-sm font-mono text-black dark:text-white"
                     ><span id="voltage">220</span> V</span
                   >
-                  <button class="text-black/60 dark:text-white/60">
+                  <button
+                    class="text-black/60 dark:text-white/60"
+                    onclick="copyToClipboard(document.getElementById('voltage').textContent)"
+                  >
                     <span class="material-symbols-outlined text-base"> content_copy </span>
                   </button>
                 </div>
@@ -161,10 +170,15 @@
               <div class="flex items-center justify-between py-2">
                 <span class="text-sm text-black/60 dark:text-white/60">Identifier</span>
                 <div class="flex items-center gap-2">
-                  <span id="identifier" class="text-sm font-mono text-black dark:text-white max-w-[250px] break-all overflow-wrap-anywhere"
+                  <span
+                    id="identifier"
+                    class="text-sm font-mono text-black dark:text-white max-w-[250px] break-all overflow-wrap-anywhere"
                     >Device001</span
                   >
-                  <button class="text-black/60 dark:text-white/60">
+                  <button
+                    class="text-black/60 dark:text-white/60"
+                    onclick="copyToClipboard(document.getElementById('identifier').textContent)"
+                  >
                     <span class="material-symbols-outlined text-base"> content_copy </span>
                   </button>
                 </div>
@@ -175,7 +189,10 @@
                   <span id="longitude" class="text-sm font-mono text-black dark:text-white"
                     >34.0522° N</span
                   >
-                  <button class="text-black/60 dark:text-white/60">
+                  <button
+                    class="text-black/60 dark:text-white/60"
+                    onclick="copyToClipboard(document.getElementById('longitude').textContent)"
+                  >
                     <span class="material-symbols-outlined text-base"> content_copy </span>
                   </button>
                 </div>
@@ -186,7 +203,10 @@
                   <span id="latitude" class="text-sm font-mono text-black dark:text-white"
                     >118.2437° W</span
                   >
-                  <button class="text-black/60 dark:text-white/60">
+                  <button
+                    class="text-black/60 dark:text-white/60"
+                    onclick="copyToClipboard(document.getElementById('latitude').textContent)"
+                  >
                     <span class="material-symbols-outlined text-base"> content_copy </span>
                   </button>
                 </div>
